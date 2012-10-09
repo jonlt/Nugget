@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>nugget sample</title>
+
+        <script type="text/javascript">
+            var webSocket = null;
+
+            function connect() {
+                var status = document.getElementById('connection-status');
+                var messages = document.getElementById('messages');
+                status.innerHTML = "opening connection...";
+
+                webSocket = new WebSocket(document.getElementById('uri').value);
+
+                webSocket.onopen = function () {
+                    status.innerHTML = 'connection open!';
+                };
+
+                webSocket.onclose = function () {
+                    status.innerHTML = 'connection closed!';
+                }
+
+                webSocket.onmessage = function (message) {
+                    console.log(message);
+                    messages.innerHTML += '<p>' + message.data + '</p>';
+                };
+
+                webSocket.onerror = function (error) {
+                    console.log(error);
+                    messages.innerHTML += '<p style="color:red;">' + error.type + '</p>';
+                };
+            }
+
+            function send() {
+                var msg = document.getElementById('msg').value;
+                webSocket.send(msg);
+            }
+        </script>
+
+	</head>
+	<body>
+        <div id="connection-status"></div>
+        
+        <div id="controls">
+            <p>
+                <input type="text" id="uri" value="ws://localhost:8181"/>
+                <input type="button" id="connect" value="Connect" onclick="connect();" />
+            </p>
+            <p>
+                <input type="text" id="msg" />
+                <input type="button" id="send" value="Send" onclick="send();"/>
+            </p>
+        </div>
+
+        <div id="messages"></div>
+
+	</body>
+</html>
